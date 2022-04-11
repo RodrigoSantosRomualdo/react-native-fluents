@@ -14,7 +14,8 @@ const Tab = createMaterialBottomTabNavigator();
 //import HomeNovo from './pages/HomeNovo';
 
 // TELAS ANTIGAS
-
+import Home from './pages/Home';
+import Perfil from './pages/Perfil';
 
 
 import Page1 from './pages/Page1';
@@ -29,7 +30,7 @@ const HomeTabs = () => {
         
         barStyle={{backgroundColor: '#6877e8',}}>
             
-            <Tab.Screen name="Page2" component={Page2} 
+            <Tab.Screen name="HomeAtual" component={Home} 
             options={{
                 tabBarLabel: "Home",
                 tabBarIcon: () => (
@@ -38,7 +39,7 @@ const HomeTabs = () => {
                 }} 
             />
 
-            <Tab.Screen name="Page3" component={Page3} 
+            <Tab.Screen name="Perfil" component={Perfil} 
             options={{
                 tabBarLabel: "Perfil",
                  

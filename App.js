@@ -36,10 +36,10 @@ export default function App({navigation}) {
 
 			const regex_validation = /^([a-z]){1,}([a-z0-9._-]){1,}([@]){1}([a-z]){2,}([.]){1}([a-z]){2,}([.]?){1}([a-z]?){2,}$/i;
 			const validacaoConta = /([@]){1}/i;
-			storageUser.armazenarUserLogin('store', 'rodrigo@gmail.com')
-			//await storegeUser.removeUserLogin('store')
-            //await storegeUser.removePremiumUser('premium')
-            //const resubuscarPremiumUserltDEPOIS = await storegeUser.buscarPremiumUser('premium');
+			//storageUser.armazenarUserLogin('store', 'rodrigo@gmail.com')
+			//await storageUser.removeUserLogin('store')
+            //await storageUser.removePremiumUser('premium')
+            //const resubuscarPremiumUserltDEPOIS = await storageUser.buscarPremiumUser('premium');
             //console.log('resubuscarPremiumUserltDEPOIS ', resubuscarPremiumUserltDEPOIS)
 			const result = await storageUser.buscarUserLogin('store');
       //const result = '';
@@ -81,9 +81,15 @@ export default function App({navigation}) {
 
   const login = async () => {
   console.log('login')
-  storegeUser.armazenarUserLogin('store', 'rodrigo@gmail.com')
+  storageUser.armazenarUserLogin('store', 'rodrigo@gmail.com')
   await setVerificacaoLogin('true')
   }
+
+  function carregarPerfilLogin() {
+    console.log('CARREGAR PERFIL')
+
+   // RNRestart.Restart();
+  } 
 
 
 
@@ -114,7 +120,7 @@ export default function App({navigation}) {
 							console.log('resultForgot->>>>>>>>>>.', resultForgot.data)
 							return Alert.alert(
 								"Message",
-								`${resultForgot.data.message}`,
+								`${resultForgot.data.message} em instantes chegará na sua caixa de e-mail!`,
 								[
 									{
 										text: "Ok",
@@ -148,14 +154,27 @@ export default function App({navigation}) {
 							password: values.passwordRegister,
 							passwordRegister: values.passwordRegisterConfirme
 						})
-						console.log(resultCreate.data)   
+						console.log('Email Register ',resultCreate.data)   
 						if (resultCreate.data.status === "FAILED") {
 							console.log('resultCreate.data.FAILED === FAILED')
 							await setCreateFailed("Error e-mail já cadastrado")
 						} else if (resultCreate.data.status === "SUCCESS") {
 							console.log('ALTERAR ISSO AQUI resultCreate.data[0] ',resultCreate.data.email)
-							storegeUser.armazenarUserLogin('store', resultCreate.data.email)
-							setVerificacaoLogin('true')
+                            await setModalVisibleRegister(false)
+							await storageUser.armazenarUserLogin('store', resultCreate.data.email)
+
+                            await setVerificacaoLogin(true)
+                            return Alert.alert(
+                            //title
+                            'Atenção',
+                            //body
+                            `Login realizado com sucesso, para iniciar clique no Ok!`,
+                            [
+                              {
+                                text: 'Ok', onPress: (() => carregarPerfilLogin()) ,
+                              },
+                            ],
+                        ) 
 						}
 
 					}
@@ -193,6 +212,8 @@ export default function App({navigation}) {
                             ]
                         )  
                     } else if (resultLogin.data.status === "SUCCESS" && resultLogin.data.email !== undefined) {
+                        
+                        /*
                         const dataFindUser = await apiUsers.post('finduser', {
                             //email: 'rodrigordromualdo@gmail.com'
                             padrao: index.padrao,
@@ -201,29 +222,31 @@ export default function App({navigation}) {
 
                         console.log('dataFindUser.data.data[0]?.premium ---> ', dataFindUser.data.data[0])
 
-                          const resubuscarPremiumUserlt = await storegeUser.buscarPremiumUser('premium');
+                          const resubuscarPremiumUserlt = await storageUser.buscarPremiumUser('premium');
                           console.log('resubuscarPremiumUserlt ', resubuscarPremiumUserlt)
                         if (dataFindUser.data.data[0]?.premium === undefined || dataFindUser.data.data[0]?.premium === false) {
                             console.log('É UNDEFINED deve ser false LOCALSTORAGE -->')
                             console.log('IF')
-                            await storegeUser.armazenarPremiumUser('premium', 'false')
+                            await storageUser.armazenarPremiumUser('premium', 'false')
                         } else {
                             console.log('ELSE')
-                            await storegeUser.armazenarPremiumUser('premium', 'true')
+                            await storageUser.armazenarPremiumUser('premium', 'true')
                             
                         }
-                        const resubuscarPremiumUserltDEPOIS = await storegeUser.buscarPremiumUser('premium');
+                        const resubuscarPremiumUserltDEPOIS = await storageUser.buscarPremiumUser('premium');
                           console.log('resubuscarPremiumUserltDEPOIS ', resubuscarPremiumUserltDEPOIS)
+
+                          */
                        // console.log('dataFindUser -> : ', dataFindUser.data.data[0].premium)
                        // console.log('dataFindUser DT ->: ', dataFindUser.data.data[0].data_premium)
 
                         console.log('CAIU NO ELSE IF EMAIL')  
-                        storegeUser.armazenarUserLogin('store', resultLogin.data.email)
+                        storageUser.armazenarUserLogin('store', resultLogin.data.email)
 
 
 
 
-						setVerificacaoLogin('true')
+						setVerificacaoLogin(true)
                         return Alert.alert(
                             //title
                             'Atenção',
@@ -238,7 +261,7 @@ export default function App({navigation}) {
                     }  
 				}
                     
-                   // storegeUser.armazenarUserLogin('store', 'rodrigo@gmail.com')
+                   // storageUser.armazenarUserLogin('store', 'rodrigo@gmail.com')
                 } catch (error) {
                   return Alert.alert(
                         "Error",
@@ -407,7 +430,7 @@ export default function App({navigation}) {
 
 	const Router = () => {
 		//useAsyncStorage.setItem("store","rodrigo@gmail.com")
-		//const result = storegeUser.buscarUserLogin('store');
+		//const result = storageUser.buscarUserLogin('store');
 		//console.log('result STORAGE: ', result)
         //const user = false;
         if (!loading) {
